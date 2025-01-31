@@ -28,17 +28,21 @@ public class GroundDetection : MonoBehaviour
 
     public bool IsGrounded(Vector3 Posistion)
     {
-        if (Physics.SphereCast(Posistion,hitRadus, Vector3.down, out RaycastHit hit, hitLayers))
+        if (Physics.SphereCast(Posistion,hitRadus, Vector3.down, out RaycastHit hit, hitDistance, hitLayers))
         {
             if (debugMode)
             {
-                Debug.DrawRay(Posistion, Vector3.down * hitDistance, Color.red);
+                Debug.DrawRay(Posistion, Vector3.down * hitDistance, Color.green,0.1f);
                 print("Hit ground");
                 Debugposistion = hit.point;
             }
             return true;
         }
-       if (debugMode) Debugposistion = Posistion;
+       if (debugMode)
+       {
+            Debugposistion = Posistion;
+            Debug.DrawRay(Posistion, Vector3.down * 0.5f, Color.red,0.1f);
+       } 
         return false;
     }
 

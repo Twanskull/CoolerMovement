@@ -6,7 +6,13 @@ public class Translation_PlayerMovement : MonoBehaviour
     Vector2 moveInput = new Vector2();
     Camera cam => Camera.main;
     bool isMoving = false;
+    [SerializeField] Rigidbody rb;
     [SerializeField] float moveSpeed = 6f;
+    [SerializeField] float JumpForce = 10f;
+    [SerializeField] int JumpLimit = 2;
+    int jumpCount = 0;
+    
+    
     //float usnigned { get { return usnigned; } set { usnigned = Mathf.Abs(value); } }
 
     void Update()
@@ -33,6 +39,23 @@ public class Translation_PlayerMovement : MonoBehaviour
         isMoving = moveInput.x != 0 || moveInput.y != 0;
         print(isMoving);
 
+    }
+
+    public void OnJump(InputValue value)
+    {
+        bool getJump = value.isPressed;
+        bool isGrounded = GroundDetection.instance.IsGrounded(transform.position);
+        
+        if ((getJump && isGrounded) || (getJump && jumpCount <= JumpLimit))
+        {
+            jumpCount++;
+            rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+        }
+        else if (isGrounded)
+        {
+            jumpCount = 0;
+        }
+        //if (getGrounded) jumpCount = 0;
     }
 
 

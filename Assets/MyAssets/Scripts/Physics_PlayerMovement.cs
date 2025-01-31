@@ -10,7 +10,9 @@ public class Physics_PlayerMovement : MonoBehaviour
     [SerializeField] float acceleration = 6f;
     [SerializeField] float maxSpeed = 6f;
     [SerializeField] float JumpForce = 6f;
+    [SerializeField] float JumpLimit = 1f;
 
+    int jumpCount = 0;
     bool isMoving = false;
 
     //float usnigned { get { return usnigned; } set { usnigned = Mathf.Abs(value); } }
@@ -33,11 +35,18 @@ public class Physics_PlayerMovement : MonoBehaviour
     public void OnJump(InputValue value)
     {
         bool getJump = value.isPressed;
+        bool isGrounded = GroundDetection.instance.IsGrounded(transform.position);
 
-        if (getJump)
+        if ((getJump && isGrounded) || (getJump && jumpCount <= JumpLimit))
         {
+            jumpCount++;
             rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
         }
+        else if (isGrounded)
+        {
+            jumpCount = 0;
+        }
+        //if (getGrounded) jumpCount = 0;
 
     }
 
