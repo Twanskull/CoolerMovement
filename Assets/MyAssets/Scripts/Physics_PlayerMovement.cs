@@ -7,10 +7,14 @@ public class Physics_PlayerMovement : MonoBehaviour
     Camera cam => Camera.main;
     Rigidbody rb => GetComponent<Rigidbody>();
 
+    [Header("Movement")]
     [SerializeField] float acceleration = 6f;
     [SerializeField] float maxSpeed = 6f;
+    [Header("Jump")]
     [SerializeField] float JumpForce = 6f;
     [SerializeField] float JumpLimit = 1f;
+    [Header("Movement Settings")]
+    [SerializeField] float VerticalMotionThreshold = 0.1f;
 
     int jumpCount = 0;
     bool isMoving = false;
@@ -71,13 +75,30 @@ public class Physics_PlayerMovement : MonoBehaviour
     {
         if (!GroundDetection.instance.IsGrounded(transform.position)) return;
         Vector3 forceDirection = direction * acceleration * Time.deltaTime;
+        Vector3 cachedVelocity = rb.linearVelocity + forceDirection;
+        rb.linearVelocity = cachedVelocity;
+        //if (rb.linearVelocity.magnitude > maxSpeed) return;
+        //rb.linearVelocity += forceDirection;//meer responsive negeert massa van object
+        if(!isMovingVertical(cachedVelocity))
+        {
+            rb.linearVelocity = Vector3.ClampMagnitude(cachedVelocity, maxSpeed);
+        }
+        
 
-        if (rb.linearVelocity.magnitude > maxSpeed) return;
-        rb.AddForce(forceDirection, ForceMode.VelocityChange);
+        
+        //rb.AddForce(forceDirection, ForceMode.VelocityChange);
+        //meer ideaal dus als je speler hevige inetaractie heeft met andere rigidbodies
     }
     void RotatePlayer(Vector3 direction)
     {
         if (direction == Vector3.zero) return;
         transform.rotation = Quaternion.LookRotation(direction);
+    }
+
+    bool isMovingVertical(Vector3 movedirection)
+    {
+        return movedirection.y < -VerticalMotionThreshold || movedirection.y > VerticalMotionThreshold;
+        
+        
     }
 }
