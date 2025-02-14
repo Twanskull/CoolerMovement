@@ -79,8 +79,8 @@ public class Physics_PlayerMovement : MonoBehaviour
         rb.linearVelocity = cachedVelocity;
         //if (rb.linearVelocity.magnitude > maxSpeed) return;
         //rb.linearVelocity += forceDirection;//meer responsive negeert massa van object
-        print (rb.linearVelocity);
-        print("Hi Marc");
+        //print (rb.linearVelocity);
+        //print("Hi Marc");
         if(!isMovingVertical(cachedVelocity))
         {
             rb.linearVelocity = Vector3.ClampMagnitude(cachedVelocity, maxSpeed);
